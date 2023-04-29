@@ -2,17 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class playerManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public static playerManager instance;
+
+    private Rigidbody2D body;
+    public float Speed = 5.0f;
+
+    public SpriteRenderer sprite;
+
+
+
     void Start()
     {
-        
+        if(instance == null) 
+            instance = this;
+        else
+            Destroy(this);
+
+        body = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+        if(Input.GetAxis("Horizontal") >= .1f || Input.GetAxis("Horizontal") <= -.1f){
+            body.velocity = new Vector2((Input.GetAxis("Horizontal") * Speed)*Time.deltaTime, 0);
+
+            if(Input.GetAxis("Horizontal") <= .1f)
+                sprite.gameObject.transform.rotation = new Quaternion(0,0,0,0);
+            else if(Input.GetAxis("Horizontal") >= -.1f)
+                sprite.gameObject.transform.rotation = new Quaternion(0,180,0,0);
+        }else{
+            body.velocity = new Vector2(0, 0);
+        }
+
+        if(Input.GetAxis("Vertical") >= .1f || Input.GetAxis("Vertical") <= -.1f){
+            body.velocity = new Vector2(body.velocity.x, (Input.GetAxis("Vertical") * Speed)*Time.deltaTime);
+        }
+        else{
+            body.velocity = new Vector2(body.velocity.x, 0);
+        }
+
+        body.velocity.Normalize();
+
+        if(Input.GetKeyDown(KeyCode.Space))
+            Speed *= 4;
+        if(Input.GetKeyUp(KeyCode.Space))
+            Speed /= 4;
     }
 }
