@@ -29,7 +29,6 @@ public class playerManager : MonoBehaviour
     void Update()
     {
         Movement();
-        TurnBoat();
     }
 
     void Movement(){
@@ -58,12 +57,5 @@ public class playerManager : MonoBehaviour
         }
 
         body.velocity.Normalize();
-    }
-
-    void TurnBoat(){
-        if(Input.GetKeyDown(KeyCode.Space))
-            Speed *= 4;
-        if(Input.GetKeyUp(KeyCode.Space))
-            Speed /= 4;
     }
 }

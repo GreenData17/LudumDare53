@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [Header("Box-info")]
     public int collectedBoxes = 0;
     public int deliveredBoxes = 0;
+    public GameObject[] UiBoxList;
 
     [Header("Post-processing")]
     // Post-processing
@@ -78,17 +79,45 @@ public class GameManager : MonoBehaviour
 
     public void EndRound(){
 
-        endPoints_text.text = $"{collectedBoxes}";
+        endPoints_text.text = $"{deliveredBoxes}";
         SwitchUI(true);
     }
 
     #region Inventory
 
-    public void AddBoxToInventory(bool isBigBox){
+    public bool AddBoxToInventory(bool isBigBox){
+        bool addingSuccess = false;
+        foreach(GameObject obj in UiBoxList){
+            if(!obj.activeInHierarchy){
+                obj.SetActive(true);
+                addingSuccess = true;
+                break;
+            }
+        }
+
+        if(!addingSuccess) return false;
+
         collectedBoxes++;
+        return true;
     }
 
-    public void RemoveBoxFromInventory(int index){
+    public void RemoveBoxFromInventory(){
+        if(collectedBoxes == 0) return;
+
+        bool removingSuccess = false;
+        foreach(GameObject obj in UiBoxList){
+            if(obj.activeInHierarchy){
+                obj.SetActive(false);
+                removingSuccess = true;
+                break;
+            }
+        }
+
+        if(!removingSuccess) return;
+
+        Debug.Log("Package Delivered!");
+
+        deliveredBoxes++;
         collectedBoxes--;
     }
 
@@ -159,9 +188,12 @@ public class GameManager : MonoBehaviour
 
     void UpdateTimerText(){
         int seconds = Mathf.FloorToInt(timer % 60);
+        if(seconds <= 0) seconds = 0;
         string secondsInString = seconds.ToString().Length > 1 ? seconds.ToString() : "0" + seconds;
 
-        TimerText.text = $"0{Mathf.FloorToInt(timer / 60)}:{secondsInString}";
+        int minutes = Mathf.FloorToInt(timer / 60) <= 0 ? 0 : Mathf.FloorToInt(timer / 60);
+
+        TimerText.text = $"0{minutes}:{secondsInString}";
     }
 
     public void ResetTimer(){

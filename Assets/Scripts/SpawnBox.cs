@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SpawnBox : MonoBehaviour
 {
+    public static SpawnBox instance;
+
     [Header("Data")]
     public float delay = 10f;
     public float _delay;
@@ -13,7 +15,9 @@ public class SpawnBox : MonoBehaviour
     public GameObject[] Boxes;
 
     void Start(){
-        _delay = delay;
+        instance = this;
+
+        _delay = 0f;
     }
 
     void Update(){

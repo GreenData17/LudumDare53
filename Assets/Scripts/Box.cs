@@ -37,8 +37,8 @@ public class Box : MonoBehaviour
         if(col.tag == "Island"){
             RandomPosition(currentSpawnArea);
         }else if(col.tag == "Player"){
-            GameManager.instance.AddBoxToInventory(bigBox.activeInHierarchy ? true : false);
-            gameObject.SetActive(false);
+            if(GameManager.instance.AddBoxToInventory(bigBox.activeInHierarchy ? true : false))
+                gameObject.SetActive(false);
         }
     }
 }
