@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
     public CanvasGroup inGame;
     public CanvasGroup endScreen;
     public TMPro.TextMeshProUGUI endPoints_text;
+    [Space]
+    public AudioSource startAudio;
+    public GameObject LoopAudio;
 
     [Header("Box-info")]
     public int collectedBoxes = 0;
@@ -62,6 +65,13 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)) EndGame();
     }
 
+    void LateUpdate(){
+        if(!startAudio.isPlaying){
+            if(LoopAudio == null) return;
+            LoopAudio.SetActive(true);
+        }
+    }
+
     public void RestartGame(){
         SceneManager.LoadScene(0);
     }
@@ -72,6 +82,8 @@ public class GameManager : MonoBehaviour
     }
 
     public void SwitchUI(bool isEndScreen){
+        if(endScreen == null) return;
+
         endScreen.alpha = isEndScreen ? 1 : 0;
         endScreen.blocksRaycasts = isEndScreen;
         endScreen.interactable = isEndScreen;
@@ -122,6 +134,8 @@ public class GameManager : MonoBehaviour
     }
 
     void UpdateCollectionText(){
+        if(collectedBoxes_text == null || deliveredBoxes_text == null) return;
+
         collectedBoxes_text.text = "Packages Collected: " + collectedBoxes;
         deliveredBoxes_text.text = "Packages Delivered: " + deliveredBoxes;
     }
@@ -131,6 +145,8 @@ public class GameManager : MonoBehaviour
     #region VignetteEffect
 
     void UpdateVignette(){
+        if(player == null) return;
+
         if(player.transform.position.x <= -100 || player.transform.position.y <= -100){
             if(player.transform.position.x <= player.transform.position.y){
                 CalculateVignetteIntensity(player.transform.position.x + 100);
@@ -187,6 +203,8 @@ public class GameManager : MonoBehaviour
     }
 
     void UpdateTimerText(){
+        if(TimerText == null) return;
+
         int seconds = Mathf.FloorToInt(timer % 60);
         if(seconds <= 0) seconds = 0;
         string secondsInString = seconds.ToString().Length > 1 ? seconds.ToString() : "0" + seconds;
